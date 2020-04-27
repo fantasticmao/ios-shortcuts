@@ -3,29 +3,14 @@
     <meta charset="utf-8" />
     <meta name="author" content="FantasticMao" />
     <title>每日天气预报</title>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"
-      integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ="
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
   </head>
-  <body>
-    <h2 id="app"></h2>
-  </body>
-  <script>
-    const url = "https://zh.wttr.in/?format=j1";
-    let content = "加载天气数据失败";
-    axios
-      .get(url)
-      .then(function (response) {
-        if (response.status === 200) {
-          content = parseData(response.data);
-        }
-      })
-      .then(function (response) {
-        document.getElementById("app").append(content);
-      });
 
+  <body>
+    <h2 id="forecast"></h2>
+  </body>
+
+  <script>
     function parseData(data) {
       const city = data["nearest_area"][0]["areaName"][0]["value"]; // 城市
       // 当前数据
@@ -60,5 +45,19 @@
         " 级。"
       );
     }
+
+    $.ajax({
+      url: "https://zh.wttr.in/?format=j1",
+      async: false,
+    })
+      .done(function (response) {
+        const content = parseData(JSON.parse(response));
+        $("#forecast").text(content);
+      })
+      .fail(function (jqXHR, textStatus, errorThrown) {
+        $("#forecast").text("加载天气数据失败");
+        window.console.log(textStatus);
+        window.console.error(errorThrown);
+      });
   </script>
 </html>

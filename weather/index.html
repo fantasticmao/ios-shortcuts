@@ -1,0 +1,64 @@
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="FantasticMao" />
+    <title>每日天气预报</title>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"
+      integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <h2 id="app"></h2>
+  </body>
+  <script>
+    const url = "http://zh.wttr.in/?format=j1";
+    let content = "加载天气数据失败";
+    axios
+      .get(url)
+      .then(function (response) {
+        if (response.status === 200) {
+          content = parseData(response.data);
+        }
+      })
+      .then(function (response) {
+        document.getElementById("app").append(content);
+      });
+
+    function parseData(data) {
+      const city = data["nearest_area"][0]["areaName"][0]["value"]; // 城市
+      // 当前数据
+      const weatherDesc = data["current_condition"][0]["lang_zh"][0]["value"]; // 当前湿度
+      const humidity = data["current_condition"][0]["humidity"]; // 当前湿度
+      const tempC = data["current_condition"][0]["temp_C"]; // 当前温度
+      // 当日数据
+      const date = data["weather"][0]["date"].split("-"); // 日期
+      const maxTempC = data["weather"][0]["maxtempC"]; // 最高气温
+      const mintempC = data["weather"][0]["mintempC"]; // 最低气温
+      const uvIndex = data["weather"][0]["uvIndex"]; // 紫外线
+      return (
+        date[0] +
+        " 年 " +
+        date[1] +
+        " 月 " +
+        date[2] +
+        " 日 " +
+        city +
+        " 当前天气" +
+        weatherDesc +
+        "，温度 " +
+        tempC +
+        " 度，湿度百分之 " +
+        humidity +
+        "。预计今日最高气温 " +
+        maxTempC +
+        " 度，最低气温 " +
+        mintempC +
+        " 度，紫外线指数 " +
+        uvIndex +
+        " 级。"
+      );
+    }
+  </script>
+</html>

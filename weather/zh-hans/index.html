@@ -1,0 +1,88 @@
+<html lang="zh-hans">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="author" content="FantasticMao"/>
+    <title>当前天气预报</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+    <script src="../js/Data.js"></script>
+</head>
+
+<body>
+<h2 id="forecast"></h2>
+</body>
+
+<script>
+    // override renderText 方法
+    class DataZhHans extends Data {
+        constructor(date, city,
+                    weatherDesc, temp, humidity, pm25,
+                    weatherDescFrom, weatherDescTo, maxTemp, minTemp, uvLevel, aqi, chanceOfRain) {
+            super(date, city,
+                weatherDesc, temp, humidity, pm25,
+                weatherDescFrom, weatherDescTo, maxTemp, minTemp, uvLevel, aqi, chanceOfRain);
+        }
+
+        renderContent() {
+            return `${this.year} 年 ${this.month} 月 ${this.day} 日 ${this.city} 当前天气 ${this.weatherDesc}，气温 ${this.temp} 度，湿度百分之 ${this.humidity}，PM 2.5 指数 ${this.pm25}。预计今日天气 ${this.weatherDescFrom} 到 ${this.weatherDescTo}，最高气温 ${this.maxTemp} 度，最低气温 ${this.minTemp} 度，紫外线强度 ${this.uvLevel}，空气质量 ${this.aqi}。`;
+        }
+    }
+
+    // 解析 URL 参数中的经度和纬度
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    const lng = params.get('lng'); // 经度
+    const lat = params.get('lat'); // 纬度
+
+    if (lng === null) {
+        throw new RangeError("illegal argument exception: lng 经度");
+    } else if (lat === null) {
+        throw new RangeError("illegal argument exception: lat 纬度");
+    }
+
+    $.ajax({
+        // 使用开源 CORS 代理服务，例如 https://github.com/Freeboard/thingproxy
+        url: "https://thingproxy.freeboard.io/fetch/https://mpv2.weather.com.cn/v2/",
+        // 使用 https://cors-proxy.fantasticmao.cn 代理服务，仅限 fantasticmao.github.com 和 fantasticmao.gitee.com 域名可用
+        // url: "https://cors-proxy.fantasticmao.cn/fetch/https://mpv2.weather.com.cn/v2/",
+        data: {
+            lng: lng,
+            lat: lat
+        },
+        async: false,
+    }).done(function (response) {
+        const data = parseResponse(response);
+        const text = data.renderContent();
+        $("#forecast").text(text);
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        $("#forecast").text("加载天气数据失败");
+        window.console.log(textStatus);
+        window.console.error(errorThrown);
+    });
+
+    function parseResponse(response) {
+        const date = new Date();
+        date.setHours(0);
+        date.setMinutes(0);
+        date.setSeconds(0);
+        date.setMilliseconds(0);
+        const dailyKeyFloat = (date.getTime() / (1000 * 60 * 60 * 24)) + 1;
+        const dailyKey = parseInt(dailyKeyFloat.toString());
+
+        const city = response["location"]["city"]; // 城市
+        // 当前数据
+        const weatherDesc = response["observe"]["weatherText"]; // 当前天气
+        const temp = response["observe"]["temperature"]; // 当前温度
+        const humidity = response["observe"]["humidity"].replace("%", ""); // 当前湿度
+        const pm25 = response["observe"]["air"]["pm25"]; // 当前 pm2.5
+        // 当日数据
+        const weatherDescFrom = response["daily"][dailyKey]["weatherDescription"][0]; // 天气描述（开始）
+        const weatherDescTo = response["daily"][dailyKey]["weatherDescription"][1]; // 天气描述（结束）
+        const maxTemp = response["daily"][dailyKey]["temperature"][0]; // 最高气温
+        const minTemp = response["daily"][dailyKey]["temperature"][1]; // 最低气温
+        const uvLevel = response["daily"][dailyKey]["index"]["list"][0]["level"]; // 紫外线强度
+        const aqi = response["daily"][dailyKey]["air"]["aqic"]; // 空气质量
+        return new DataZhHans(date, city, weatherDesc, temp, humidity, pm25,
+            weatherDescFrom, weatherDescTo, maxTemp, minTemp, uvLevel, aqi, null);
+    }
+</script>
+</html>

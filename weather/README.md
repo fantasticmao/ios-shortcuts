@@ -1,14 +1,19 @@
-Weather forecast data fields used:
+# Weather Forecast
+
+## Data Fields
 
 - [x] date
 - [x] city
 - now's data
     - [x] weatherDesc
-    - [x] tempC
+    - [x] temp
     - [x] humidity
+    - [x] pm25
 - today's data
-    - [x] maxTempC
-    - [x] minTempC
-    - [x] uvIndex
-    - [ ] airQualityIndex
+    - [x] weatherDescFrom
+    - [x] weatherDescTo
+    - [x] maxTemp
+    - [x] minTemp
+    - [x] uvLevel
+    - [x] aqi
     - [ ] chanceOfRain

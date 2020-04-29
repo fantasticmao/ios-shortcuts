@@ -41,9 +41,9 @@
 
     $.ajax({
         // 使用开源 CORS 代理服务，例如 https://github.com/Freeboard/thingproxy
-        url: "https://thingproxy.freeboard.io/fetch/https://mpv2.weather.com.cn/v2/",
+        // url: "https://thingproxy.freeboard.io/fetch/https://mpv2.weather.com.cn/v2/",
         // 使用 https://cors-proxy.fantasticmao.cn 代理服务，仅限 fantasticmao.github.com 和 fantasticmao.gitee.com 域名可用
-        // url: "https://cors-proxy.fantasticmao.cn/fetch/https://mpv2.weather.com.cn/v2/",
+        url: "https://cors-proxy.fantasticmao.cn/mpv2.weather.com.cn/v2/",
         data: {
             lng: lng,
             lat: lat

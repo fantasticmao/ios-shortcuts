@@ -9,6 +9,29 @@
 
 ---
 
+## Nginx Config: cors-proxy.fantasticmao.cn
+
+```text
+server {
+    listen 443 ssl http2;
+    server_name cors-proxy.fantasticmao.cn;
+
+    ......
+
+    resolver 8.8.8.8;
+
+    location ~ ^/(?<domain>mpv2\.weather\.com\.cn)/(?<path>.*)$ {
+        if ($http_origin ~* (localhost|fantasticmao\.github\.io|fantasticmao\.gitee\.io)) {
+            add_header 'Access-Control-Allow-Origin' $http_origin;
+        }
+        proxy_pass  $scheme://$domain/$path$is_args$args;
+    }
+
+}
+```
+
+---
+
 ## 中国天气网（Does not support CORS）
 
 ### Method & URL

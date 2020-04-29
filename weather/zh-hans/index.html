@@ -3,6 +3,15 @@
     <meta charset="utf-8"/>
     <meta name="author" content="FantasticMao"/>
     <title>当前天气预报</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-89151446-3"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-89151446-3');
+    </script>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
     <script src="../js/Data.js"></script>
 </head>
@@ -23,7 +32,7 @@
         }
 
         renderContent() {
-            let content = `${this.year} 年 ${this.month} 月 ${this.day} 日 ${this.city} 当前天气 ${this.weatherDesc}，气温 ${this.temp} 度，湿度百分之 ${this.humidity}，PM 2.5 指数 ${this.pm25}。`;
+            let content = `${this.year} 年 ${this.month} 月 ${this.day} 日 ${this.city} 当前天气 ${this.weatherDesc}，气温 ${this.temp} 度，湿度百分之 ${this.humidity}，PM 二点五指数 ${this.pm25}。`;
             if (this.weatherDescFrom === this.weatherDescTo) {
                 content = content + `预计今日天气 ${this.weatherDescFrom}，`;
             } else {

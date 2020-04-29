@@ -23,7 +23,14 @@
         }
 
         renderContent() {
-            return `${this.year} 年 ${this.month} 月 ${this.day} 日 ${this.city} 当前天气 ${this.weatherDesc}，气温 ${this.temp} 度，湿度百分之 ${this.humidity}，PM 2.5 指数 ${this.pm25}。预计今日天气 ${this.weatherDescFrom} 到 ${this.weatherDescTo}，最高气温 ${this.maxTemp} 度，最低气温 ${this.minTemp} 度，紫外线强度 ${this.uvLevel}，空气质量 ${this.aqi}。`;
+            let content = `${this.year} 年 ${this.month} 月 ${this.day} 日 ${this.city} 当前天气 ${this.weatherDesc}，气温 ${this.temp} 度，湿度百分之 ${this.humidity}，PM 2.5 指数 ${this.pm25}。`;
+            if (this.weatherDescFrom === this.weatherDescTo) {
+                content = content + `预计今日天气 ${this.weatherDescFrom}，`;
+            } else {
+                content = content + `预计今日天气 ${this.weatherDescFrom} 到 ${this.weatherDescTo}，`;
+            }
+            content = content + `最高气温 ${this.maxTemp} 度，最低气温 ${this.minTemp} 度，紫外线强度 ${this.uvLevel}，空气质量 ${this.aqi}。`;
+            return content;
         }
     }
 

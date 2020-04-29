@@ -32,7 +32,8 @@
         }
 
         renderContent() {
-            let content = `${this.year} 年 ${this.month} 月 ${this.day} 日 ${this.city} 当前天气 ${this.weatherDesc}，气温 ${this.temp} 度，湿度百分之 ${this.humidity}，PM 二点五指数 ${this.pm25}。`;
+            // 注意：「P M」中间得加个空格，不然 Siri 会念成「下午」
+            let content = `${this.year} 年 ${this.month} 月 ${this.day} 日 ${this.city} 当前天气 ${this.weatherDesc}，气温 ${this.temp} 度，湿度百分之 ${this.humidity}，P M 二点五指数 ${this.pm25}。`;
             if (this.weatherDescFrom === this.weatherDescTo) {
                 content = content + `预计今日天气 ${this.weatherDescFrom}，`;
             } else {

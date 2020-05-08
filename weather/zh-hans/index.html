@@ -12,13 +12,12 @@
 
         gtag('config', 'UA-89151446-3');
     </script>
-    <script src="../js/Data.js"></script>
 </head>
 
 <body>
 <h2 id="forecast"></h2>
-</body>
 
+<script src="../js/Data.js"></script>
 <script>
     // override renderText 方法
     class DataZhHans extends Data {
@@ -80,35 +79,23 @@
         throw new Error('illegal argument exception: lat 纬度');
     }
 
-    function sendRequest(timeout) {
-        return new Promise(function (resolve, reject) {
-            setTimeout(function () {
-                reject(new Error("加载天气数据失败，请求超时"));
-            }, timeout);
-
-            fetch(
-                // 使用开源 CORS 代理服务，例如 https://github.com/Freeboard/thingproxy
-                // `https://thingproxy.freeboard.io/fetch/https://mpv2.weather.com.cn/v2/?lng=${lng}&lat=${lat}`,
-                // 使用 https://cors-proxy.fantasticmao.cn 代理服务，仅限 fantasticmao.github.com 和 fantasticmao.gitee.com 域名可用
-                `https://cors-proxy.fantasticmao.cn/mpv2.weather.com.cn/v2/?lng=${lng}&lat=${lat}`,
-            ).then(resolve, reject);
-        });
-    }
-
-    sendRequest(5000).then(function (response) {
-        if (response.ok) {
-            return response.json();
+    (function () {
+        const request = new XMLHttpRequest();
+        request.open('GET',
+            // 使用开源 CORS 代理服务，例如 https://github.com/Freeboard/thingproxy
+            // `https://thingproxy.freeboard.io/fetch/https://mpv2.weather.com.cn/v2/?lng=${lng}&lat=${lat}`,
+            // 使用 https://cors-proxy.fantasticmao.cn 代理服务，仅限 fantasticmao.github.com 和 fantasticmao.gitee.com 域名可用
+            `https://cors-proxy.fantasticmao.cn/mpv2.weather.com.cn/v2/?lng=${lng}&lat=${lat}`,
+            false);
+        request.send(null);
+        if (request.status === 200) {
+            const json = JSON.parse(request.responseText);
+            const data = parseData(json);
+            document.getElementById('forecast').innerHTML = data.renderContent();
         } else {
-            window.console.error(response);
-            return Promise.reject(new Error(`加载天气数据失败，响应状态码 ${response.status}`));
+            document.getElementById('forecast').innerHTML = "加载天气数据失败，请求失败";
         }
-    }).then(function (json) {
-        const data = parseData(json);
-        const text = data.renderContent();
-        document.getElementById('forecast').innerHTML = text;
-    }).catch(function (reason) {
-        window.console.error(reason);
-        document.getElementById('forecast').innerHTML = reason;
-    });
+    })();
 </script>
+</body>
 </html>

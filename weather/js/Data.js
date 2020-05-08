@@ -20,6 +20,6 @@ class Data {
     };
 
     renderContent() {
-        throw new ReferenceError("unsupported operation exception: renderContent");
+        throw new ReferenceError('unsupported operation exception: renderContent');
     }
 }
